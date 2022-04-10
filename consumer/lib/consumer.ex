@@ -13,6 +13,8 @@ defmodule Consumer do
 
   """
 def start() do
+
+  client_endpoints = ["localhost": 29092]
     group_config = [
       offset_commit_policy: :commit_to_kafka_v2,
       offset_commit_interval_seconds: 5,
@@ -29,6 +31,7 @@ def start() do
       consumer_config: [begin_offset: :earliest]
     }
 
+    :brod.start_client(client_endpoints, :kafka_client)
     :brod.start_link_group_subscriber_v2(config)
   end
 
@@ -39,6 +42,7 @@ def start() do
   def handle_message(message, state) do
     {_kafka_message_set, content, partition, _unkow, _set} = message
     IO.inspect("I recieved a message:")
+    IO.inspect(message)
     IO.inspect(content)
     {:ok, :commit, []}
     end

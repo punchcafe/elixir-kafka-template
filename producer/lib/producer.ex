@@ -26,6 +26,9 @@ def publish(topic, partition_key, message) do
 
   def start(_, _) do
     create("test_topic")
+    client_endpoints = ["localhost": 29092]
+    :brod.start_client(client_endpoints, :kafka_client)
+    :brod.start_producer(:kafka_client, "test_topic", [])
     {:ok, spawn(&looper/0)}
   end
 
